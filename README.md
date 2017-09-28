@@ -45,6 +45,15 @@ Currently, this plugin also depends on my personal forks of:
 * [Kaleidoscope][myKaleidoscope], found in `cdisselkoen/Kaleidoscope` (branch `virtual-hardware`)
 * [Kaleidoscope-Focus][myFocus], found in `cdisselkoen/Kaleidoscope-Focus` (branch `virtual-hardware`)
 
+To (temporarily) switch to these forks, do:
+```
+cd /path/to/Kaleidoscope
+git remote add cdisselkoen https://github.com/cdisselkoen/Kaleidoscope
+git fetch cdisselkoen
+git checkout cdisselkoen/virtual-hardware
+```
+and repeat for Kaleidoscope-Focus.  To change back, just `git checkout master` or whatever branch you were previously on.
+
 Pull requests to upstream all of the required changes into the keyboardio repos are pending.
 
 ## Usage
