@@ -41,20 +41,19 @@ Symlink your plugin directory (`$SKETCHBOOK_DIR/hardware/keyboardio/avr/librarie
 ln -s /path/to/sketchbook/hardware/keyboardio/avr/libraries support/x86/libraries
 ```
 
-Currently, this plugin also depends on my personal forks of:
-* [Kaleidoscope][myKaleidoscope], found in `cdisselkoen/Kaleidoscope` (branch `virtual-hardware`)
-* [Kaleidoscope-Focus][myFocus], found in `cdisselkoen/Kaleidoscope-Focus` (branch `virtual-hardware`)
-
-To (temporarily) switch to these forks, do:
+Currently, this plugin also depends on my personal fork of [Kaleidoscope-Focus][myFocus],
+ found in `cdisselkoen/Kaleidoscope-Focus` (branch `virtual-hardware`).  To (temporarily)
+ switch to this fork, do:
 ```
-cd /path/to/Kaleidoscope
-git remote add cdisselkoen https://github.com/cdisselkoen/Kaleidoscope
+cd /path/to/Kaleidoscope-Focus
+git remote add cdisselkoen https://github.com/cdisselkoen/Kaleidoscope-Focus
 git fetch cdisselkoen
 git checkout cdisselkoen/virtual-hardware
 ```
-and repeat for Kaleidoscope-Focus.  To change back, just `git checkout master` or whatever branch you were previously on.
+To change back, just `git checkout master` or whatever branch you were previously on.
 
-Pull requests to upstream all of the required changes into the keyboardio repos are pending.
+`keyboardio/Kalediscope-Focus` PR #6 ([link][FocusPR]) is pending, and once accepted
+will eliminate the need to use my personal fork.
 
 ## Usage
 
@@ -112,5 +111,5 @@ If you have feature requests or issues to report, again feel free to open issues
 GitHub!
 
  [fw]: https://github.com/keyboardio/Kaleidoscope
- [myKaleidoscope]: https://github.com/cdisselkoen/Kaleidoscope/tree/virtual-hardware
  [myFocus]: https://github.com/cdisselkoen/Kaleidoscope-Focus/tree/virtual-hardware
+ [FocusPR]: https://github.com/keyboardio/Kaleidoscope-Focus/pull/6
