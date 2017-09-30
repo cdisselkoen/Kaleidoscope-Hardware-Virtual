@@ -53,15 +53,19 @@ which you can run just like any other program.  Run this program to test your sk
 
 ### Input and output
 
-Input in terms of physical keypresses is handled at the command line.  Type '?' at the prompt
-for instructions and examples.  Output, in terms of HID reports (packets sent to the host
-computer, for real hardware), is printed to the command line as it happens.
+Input in terms of physical keypresses is handled one of two ways - either interactively
+(at the command line), or through a script.  To use a script, simply supply its filename
+as the argument to the executable; or for interactive mode, use "-i" as the argument.
+Run with no arguments (or type '?' or 'help' at the interactive prompt)
+for instructions and examples.
 
-Serial output (through the `Serial` object) is collected and redirected to a file called
+Output, in terms of HID reports (packets sent to the host computer, for real hardware),
+is printed to the command line (i.e. `stdout`) as it happens.  Serial output (through
+the `Serial` object) is collected and redirected to a file called
 `serialoutput_0.txt` in your current directory.  For watching this output in real time in a
-separate window, I recommend `tail -f -n 80 serialoutput_0.txt`.  Serial input is currently
-unsupported - sketches requesting it will still build, but will find nothing is ever
-transmitted to them on the serial port.
+separate window during interactive mode, I recommend `tail -f -n 80 serialoutput_0.txt`.
+Serial input is currently unsupported - sketches requesting it will still build, but will
+find nothing is ever transmitted to them on the serial port.
 
 ## Limitations
 
@@ -89,7 +93,7 @@ moved at least to the "unsupported-but-still-builds" state.
 Currently, the virtual hardware's key layout resembles the Model 01, in the sense
 that it uses the same `KEYMAP()` and `KEYMAP_STACKED()` macros that the Model 01 does,
 and expects sketches to specify their keymaps in that format.  It also relies on the
-Model 01's key layout for command-line interaction, explained more thoroughly in the
+Model 01's key layout for command specification, explained more thoroughly in the
 help message.  Modifying or extending the virtual hardware to support other key
 layouts shouldn't be very hard, if you have a desire for that.  Pull requests welcome.
 

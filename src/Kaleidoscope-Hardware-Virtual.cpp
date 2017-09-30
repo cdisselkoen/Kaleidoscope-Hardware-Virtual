@@ -18,7 +18,7 @@
 
 #include <Kaleidoscope.h>
 #include "Kaleidoscope-Hardware-Virtual.h"
-#include <string>
+#include "virtual_input.h"
 #include <iostream>
 #include <sstream>
 
@@ -33,54 +33,6 @@ void Virtual::setup(void) {
       mask[row][col] = false;
     }
   }
-}
-
-static void printHelp(void) {
-  std::cout << "--- Virtual Keyboard Help ---" << std::endl;
-  std::cout << "\n1. BASICS\n" << std::endl;
-  std::cout << "At the prompt, specify what actions you want to take on the virtual keys for this scan cycle." << std::endl;
-  std::cout << "To 'tap' a virtual key, just enter its name." << std::endl;
-  std::cout << "To 'tap' multiple keys in one cycle, enter each of their names separated by a space." << std::endl;
-  std::cout << "Keys are identified by their \"physical\" names, regardless of what the keymap in the current" << std::endl;
-  std::cout << "  Kaleidoscope sketch may or may not be doing.  The physical name of a key is the (unshifted)" << std::endl;
-  std::cout << "  text printed on the key on the standard QWERTY Model 01.  As an exception, we distinguish" << std::endl;
-  std::cout << "  physical keys with the same text (ctrl, shift, and fn) with 'l' or 'r' indicating the hand." << std::endl;
-  std::cout << "Here is a list of all the valid key names:" << std::endl;
-  std::cout << "  prog 1 2 3 4 5 led any 6 7 8 9 0 num ` q w e r t y u i o p = pgup a s d f g tab enter h j k l ; '" << std::endl;
-  std::cout << "  pgdn z x c v b esc fly n m , . / - lctrl bksp cmd lshift lfn rshift alt space rctrl rfn" << std::endl;
-  std::cout << "\nExamples: ('>' is the prompt)" << std::endl;
-  std::cout << "  > t             | tap the physical T key" << std::endl;
-  std::cout << "  > esc           | tap the physcial esc key" << std::endl;
-  std::cout << "  > lshift e      | tap the lshift and e keys simultaneously" << std::endl;
-  std::cout << "  > p q lfn fly   | tap the p, q, lfn, and fly keys simultaneously" << std::endl;
-  std::cout << "\n2. ADVANCED\n" << std::endl;
-  std::cout << "In addition to key names, there are various commands available.  Key names are always in all" << std::endl;
-  std::cout << "  lowercase (defined as symbols that appear in the unshifted positions on the standard QWERTY" << std::endl;
-  std::cout << "  Model 01); uppercase/shifted symbols denote commands." << std::endl;
-  std::cout << "Commands can be inserted anywhere in the input line, and affect the handling of keys following." << std::endl;
-  std::cout << "The default command, which we used above, is 'tap' (where the key is 'down' for just this cycle)." << std::endl;
-  std::cout << "'tap' can also be explicitly specified by 'T', as in \"> T b\" to 'tap' the physical B key." << std::endl;
-  //std::cout << "Whitespace between the command and its key is optional, so the above could also be expressed as \"> Tb\"." << std::endl;
-  std::cout << "You can hold virtual keys down using the 'D' (down) command.  The key will remain held until you" << std::endl;
-  std::cout << "  say otherwise. While keys are held, the prompt changes from '>' to '+>'." << std::endl;
-  std::cout << "You can release a previously held virtual key using the 'U' command." << std::endl;
-  std::cout << "Commands affect all following keys within the line unless overridden. So, \"> D lshift u\" holds" << std::endl;
-  std::cout << "  both lshift and u. To hold lshift and tap u, either enter \"> D lshift T u\", or \"> u D lshift\"." << std::endl;
-  std::cout << "An exception to the above rule is the command 'C', which releases all currently held keys." << std::endl;
-  std::cout << "The command '_' will process a scan cycle with no input (but held keys will remain held)." << std::endl;
-  std::cout << "One final command, 'Q', will quit the program." << std::endl;
-  std::cout << "\nAdvanced sequence example:" << std::endl;
-  std::cout << "  > h             | tap the physical H key" << std::endl;
-  std::cout << "  > D lshift      | hold the physical lshift key down" << std::endl;
-  std::cout << "  +> c tab        | tap both c and tab (with lshift held)" << std::endl;
-  std::cout << "  +> D alt        | hold alt (in addition to lshift)" << std::endl;
-  std::cout << "  +> U lshift T e | Release lshift, and tap e in the same cycle" << std::endl;
-  std::cout << "  +> _            | Do nothing for a scan cycle (but keep alt held)" << std::endl;
-  std::cout << "  +> C            | Release all held keys (in this case, just alt)" << std::endl;
-  std::cout << "  > enter D `     | Tap the physical enter key, and hold the ` key" << std::endl;
-  std::cout << "  +> fly          | Tap the fly key (with ` key held)" << std::endl;
-  std::cout << "  +> Q            | Quit the program" << std::endl;
-  std::cout << std::endl;
 }
 
 typedef enum {
@@ -99,20 +51,15 @@ bool Virtual::anythingHeld() {
 }
 
 void Virtual::readMatrix() {
-  std::cout << "Enter a command for this scan cycle, or ? or 'help' for help." << std::endl;
-  if(anythingHeld()) std::cout << "+> ";
-  else std::cout << "> ";
-  std::string line;
-  std::getline(std::cin, line);
   std::stringstream sline;
-  sline << line;
+  sline << getLineOfInput(anythingHeld());
   Mode mode = M_TAP;
   while(true) {
     std::string token;
     std::getline(sline, token, ' ');
     if(token == "") break;  // end of line
-    else if(token == "_") break;  // do nothing this line
-    else if(token == "?" || token == "help") {
+    else if(token == "#") break;  // skip the rest of the line
+    else if((token == "?" || token == "help") && isInteractive()) {
       printHelp();
     } else if(token == "Q") {
       exit(0);

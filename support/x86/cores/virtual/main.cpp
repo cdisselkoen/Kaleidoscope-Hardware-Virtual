@@ -18,7 +18,8 @@
 */
 
 #include <Arduino.h>
-#include <stdio.h>
+#include "virtual_input.h"
+#include <iostream>
 
 // Declared weak in Arduino.h to allow user redefinitions.
 int atexit(void (* /*func*/ )()) { return 0; }
@@ -36,14 +37,17 @@ void init(void) {
   // We don't need to do anything.
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
+    if(!initVirtualInput(argc, argv)) return 1;
+
 	init();
 	initVariant();
 
 	setup();
 
-	for (;;) {
+	for (int cycle = 0; ; cycle++) {
+        std::cout << "Starting cycle " << cycle << std::endl;
 		loop();
 		if (serialEventRun) serialEventRun();
 	}
