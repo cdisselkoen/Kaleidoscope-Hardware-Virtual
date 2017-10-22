@@ -6,8 +6,12 @@
 
 static bool interactive;
 static std::istream* input = NULL;
+static unsigned cycle = 0;
 
 bool isInteractive(void) { return interactive; }
+
+unsigned currentCycle(void) { return cycle; }
+void nextCycle(void) { cycle++; }
 
 bool initVirtualInput(int argc, char* argv[]) {
   if(argc < 2 || strcmp(argv[1], "?") == 0) {

@@ -46,11 +46,12 @@ int main(int argc, char* argv[])
 
 	setup();
 
-	for (int cycle = 0; ; cycle++) {
-        std::cout << "Starting cycle " << cycle << std::endl;
-		loop();
-		if (serialEventRun) serialEventRun();
-	}
+    while(true) {
+      std::cout << "Starting cycle " << currentCycle() << std::endl;
+      loop();
+      if (serialEventRun) serialEventRun();
+      nextCycle();
+    }
 
 	return 0;
 }
