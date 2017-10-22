@@ -44,4 +44,8 @@ bool Mouse_::isPressed(uint8_t b) {
   return ((b & _buttons) > 0);
 }
 
+void Mouse_::sendReport(void* data, int length) {
+  std::cout << "A virtual Mouse HID report was sent." << std::endl;
+}
+
 Mouse_ Mouse;

@@ -9,3 +9,17 @@ unsigned long millis(void) {
 unsigned long micros(void) {
   return millis()*1000;
 }
+
+
+// yes, these are pretty stupid with the current millis() and micros()
+// but hopefully they stays fine if/when we get a better millis() and micros()
+
+void delay(unsigned long ms) {
+  unsigned long end = millis() + ms;
+  while(millis() < end);
+}
+
+void delayMicroseconds(unsigned int us) {
+  unsigned long end = micros() + us;
+  while(micros() < end);
+}
