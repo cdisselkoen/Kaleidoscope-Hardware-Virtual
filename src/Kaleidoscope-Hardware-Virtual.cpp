@@ -21,6 +21,7 @@
 #include "virtual_io.h"
 #include <iostream>
 #include <sstream>
+#include <string>
 
 Virtual::Virtual(void) {
 }
@@ -49,6 +50,13 @@ bool Virtual::anythingHeld() {
   }
   return false;
 }
+
+typedef struct {
+  uint8_t row;
+  uint8_t col;
+} rc;
+
+static rc getRCfromPhysicalKey(std::string keyname);
 
 void Virtual::readMatrix() {
   std::stringstream sline;
@@ -127,7 +135,7 @@ void Virtual::actOnMatrixScan() {
   }
 }
 
-Virtual::rc Virtual::getRCfromPhysicalKey(std::string keyname) {
+static rc getRCfromPhysicalKey(std::string keyname) {
   if(keyname == "prog") return {0,0};
   else if(keyname == "1") return {0,1};
   else if(keyname == "2") return {0,2};

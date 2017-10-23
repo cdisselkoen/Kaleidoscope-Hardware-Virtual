@@ -21,8 +21,6 @@
 #include <Arduino.h>
 #define HARDWARE_IMPLEMENTATION Virtual
 
-#include <string>
-
 #define COLS 16
 #define ROWS 4
 #define LED_COUNT 0
@@ -68,13 +66,6 @@ class Virtual {
     keystate keystates_prev[ROWS][COLS];
 
     bool anythingHeld();
-
-    typedef struct {
-      uint8_t row;
-      uint8_t col;
-    } rc;
-
-    rc getRCfromPhysicalKey(std::string keyname);
 
     // Super inefficient, but fine for our purposes
     bool mask[ROWS][COLS];
