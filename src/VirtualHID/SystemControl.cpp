@@ -1,5 +1,6 @@
 #include "SystemControl.h"
 #include <iostream>
+#include "virtual_io.h"
 
 SystemControl_::SystemControl_(void) {}
 void SystemControl_::begin(void) { releaseAll(); }
@@ -21,8 +22,8 @@ void SystemControl_::press(uint8_t s) {
 }
 
 void SystemControl_::sendReport(void* data, int length) {
-  // TODO: More informative here
   std::cout << "A virtual SystemControl HID report with value " << *(uint8_t*)data << " was sent." << std::endl;
+  logUSBEvent("SystemControl HID report", data, length);
 }
 
 SystemControl_ SystemControl;

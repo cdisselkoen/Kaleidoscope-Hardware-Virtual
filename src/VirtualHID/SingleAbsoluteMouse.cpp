@@ -1,10 +1,12 @@
 #include "SingleAbsoluteMouse.h"
 #include <iostream>
+#include "virtual_io.h"
 
 SingleAbsoluteMouse_::SingleAbsoluteMouse_(void) {}
 
 void SingleAbsoluteMouse_::sendReport(void* data, int length) {
-  std::cout << "SingleAbsoluteMouse HID report sent" << std::endl;
+  std::cout << "A virtual SingleAbsoluteMouse HID report was sent." << std::endl;
+  logUSBEvent("SingleAbsoluteMouse HID report", data, length);
 }
 
 // Everything else is stubs for now - no effect

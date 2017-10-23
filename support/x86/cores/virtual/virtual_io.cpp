@@ -1,17 +1,37 @@
-#include "virtual_input.h"
+#include "virtual_io.h"
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <string.h>
 #include <stdlib.h>  // exit()
+#include <sys/types.h>  // mkdir()
+#include <sys/stat.h>  // mkdir()
+#include <errno.h>
 
 static bool interactive;
 static std::istream* input = NULL;
+static std::ostream* usbstream = NULL;
 static unsigned cycle = 0;
 
 bool isInteractive(void) { return interactive; }
 
 unsigned currentCycle(void) { return cycle; }
 void nextCycle(void) { cycle++; }
+
+void logUSBEvent(std::string descrip, void* data, int length) {
+  if(usbstream) {
+    *usbstream << "Cycle " << std::dec << currentCycle() << ": " << descrip << ": 0x" << std::hex;
+    unsigned char* report = (unsigned char*) data;
+    for(int i = 0; i < length; i++) *usbstream << std::setfill('0') << std::setw(2) << (unsigned int)(report[i]);  // pad with 0's to total of 2 characters
+    *usbstream << std::endl;
+  }
+}
+
+void logUSBEvent_keyboard(std::string descrip) {
+  if(usbstream) {
+    *usbstream << "Cycle " << std::dec << currentCycle() << ": " << descrip << std::endl;
+  }
+}
 
 bool initVirtualInput(int argc, char* argv[]) {
   if(argc < 2 || strcmp(argv[1], "?") == 0) {
@@ -33,6 +53,13 @@ bool initVirtualInput(int argc, char* argv[]) {
       return false;
     }
   }
+
+  if(mkdir("results", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) && errno != EEXIST) {
+    std::cerr << "Error creating directory 'results', errno " << errno << std::endl;
+    return false;
+  }
+  usbstream = new std::ofstream("results/USB.txt");
+
   return true;
 }
 
@@ -49,7 +76,7 @@ std::string getLineOfInput(bool anythingHeld) {
 }
 
 void printHelp(void) {
-  std::cout << "Usage:\n" << std::endl;
+  std::cout << "\nUsage:\n" << std::endl;
   std::cout << "(Running with no arguments or with the argument '?' will print this help message and quit.)\n" << std::endl;
   std::cout << "This program expects a single argument, which is either:" << std::endl;
   std::cout << "  1. An input file/script, with format given below, or" << std::endl;
@@ -59,10 +86,11 @@ void printHelp(void) {
   std::cout << "  prompt (in interactive mode), represents one scan cycle; a blank line or empty prompt means" << std::endl;
   std::cout << "  to do nothing to the inputs this scan cycle (held keys will still remain held, though)." << std::endl;
   std::cout << "\nOutput, in terms of HID reports (packets sent to the host computer, for real hardware), is" << std::endl;
-  std::cout << "  printed to stdout as it happens.  Serial output (through the 'Serial' object) is collected" << std::endl;
-  std::cout << "  and redirected to a file called 'serialoutput_0.txt' in the current directory.  Serial input" << std::endl;
-  std::cout << "  is currently unsupported - sketches requesting it will still build, but will find nothing is" << std::endl;
-  std::cout << "  ever transmitted to them on the serial port." << std::endl;
+  std::cout << "  printed to stdout as it happens, in summarized/human-readable form.  Raw HID output and" << std::endl;
+  std::cout << "  serial output (through the 'Serial' object) are collected and redirected to various files" << std::endl;
+  std::cout << "  in a subdirectory \"results\" of the current directory." << std::endl;
+  std::cout << "\nSerial input is currently unsupported - sketches requesting it will still build, but will" << std::endl;
+  std::cout << "  find nothing is ever transmitted to them on the serial port." << std::endl;
   std::cout << "\n--- Commands ---" << std::endl;
   std::cout << "\n1. BASICS\n" << std::endl;
   std::cout << "In any given scan cycle, you can 'tap' a virtual key simply by entering its name." << std::endl;

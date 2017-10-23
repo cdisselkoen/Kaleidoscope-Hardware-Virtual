@@ -18,7 +18,7 @@
 */
 
 #include <Arduino.h>
-#include "virtual_input.h"
+#include "virtual_io.h"
 #include <iostream>
 
 // Declared weak in Arduino.h to allow user redefinitions.

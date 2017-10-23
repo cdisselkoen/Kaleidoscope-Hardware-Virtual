@@ -1,5 +1,6 @@
 #include "ConsumerControl.h"
 #include <iostream>
+#include "virtual_io.h"
 
 ConsumerControl_::ConsumerControl_(void) {}
 void ConsumerControl_::begin(void) { releaseAll(); }
@@ -36,8 +37,8 @@ void ConsumerControl_::release(uint16_t m) {
 }
 
 void ConsumerControl_::sendReport(void* data, int length) {
-  // TODO: More informative here
   std::cout << "A virtual ConsumerControl HID report was sent." << std::endl;
+  logUSBEvent("ConsumerControl HID report", data, length);
 }
 
 ConsumerControl_ ConsumerControl;

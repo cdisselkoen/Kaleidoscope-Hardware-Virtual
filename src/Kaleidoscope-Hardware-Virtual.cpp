@@ -18,7 +18,7 @@
 
 #include <Kaleidoscope.h>
 #include "Kaleidoscope-Hardware-Virtual.h"
-#include "virtual_input.h"
+#include "virtual_io.h"
 #include <iostream>
 #include <sstream>
 

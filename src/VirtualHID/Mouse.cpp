@@ -1,5 +1,6 @@
 #include "Mouse.h"
 #include <iostream>
+#include "virtual_io.h"
 
 Mouse_::Mouse_(void) {}
 void Mouse_::begin(void) { releaseAll(); }
@@ -46,6 +47,7 @@ bool Mouse_::isPressed(uint8_t b) {
 
 void Mouse_::sendReport(void* data, int length) {
   std::cout << "A virtual Mouse HID report was sent." << std::endl;
+  logUSBEvent("Mouse HID report", data, length);
 }
 
 Mouse_ Mouse;

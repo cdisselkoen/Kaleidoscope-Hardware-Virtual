@@ -24,7 +24,7 @@ HardwareSerial::HardwareSerial() {}
 
 void HardwareSerial::begin(unsigned long baud, byte config) {
   char filename[64];
-  snprintf(filename, 64, "serialoutput_%u.txt", serialNumber++);
+  snprintf(filename, 64, "results/serial_%u.txt", serialNumber++);
   out = fopen(filename, "w");
 }
 

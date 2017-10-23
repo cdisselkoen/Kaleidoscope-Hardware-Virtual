@@ -60,10 +60,13 @@ Run with no arguments (or type '?' or 'help' at the interactive prompt)
 for instructions and examples.
 
 Output, in terms of HID reports (packets sent to the host computer, for real hardware),
-is printed to the command line (i.e. `stdout`) as it happens.  Serial output (through
-the `Serial` object) is collected and redirected to a file called
-`serialoutput_0.txt` in your current directory.  For watching this output in real time in a
-separate window during interactive mode, I recommend `tail -f -n 80 serialoutput_0.txt`.
+is printed to the command line (i.e. `stdout`) as it happens, in summarized/human-readable
+form.  Raw HID output and serial output (through the `Serial` object) are collected and
+redirected to various files in a subdirectory "results" of the current directory.
+This feature is intended mostly for purposes of automated testing/validation, but if you
+wish to watch the raw or serial output in real time in a separate window during interactive
+mode, I recommend `tail -f -n 80 results/whatever.txt`.
+
 Serial input is currently unsupported - sketches requesting it will still build, but will
 find nothing is ever transmitted to them on the serial port.
 

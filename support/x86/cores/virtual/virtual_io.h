@@ -10,3 +10,6 @@ void printHelp(void);
 
 unsigned currentCycle(void);  // current cycle number, first cycle is 0
 void nextCycle(void);  // should only be used by cores/virtual/main.cpp, to increment currentCycle()
+
+void logUSBEvent(std::string descrip, void* data, int length);
+void logUSBEvent_keyboard(std::string descrip);  // assumes 'descrip' uniquely describes the raw data too
