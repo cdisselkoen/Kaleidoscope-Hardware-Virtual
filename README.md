@@ -24,18 +24,18 @@ advantages:
 
 ## Installation
 
-Clone this Git repo into wherever you normally put plugins.  (This should be
+1. Clone this Git repo into wherever you normally put plugins.  (This should be
 `$SKETCHBOOK_DIR/hardware/keyboardio/avr/libraries`, or at least accessible from there
 via symlink.  `$SKETCHBOOK_DIR` is your Arduino sketchbook directory, perhaps
 `$HOME/Arduino` or `$HOME/Documents/Arduino`.)
 
-Symlink this plugin's `support/x86` directory as `$SKETCHBOOK_DIR/hardware/keyboardio/x86`.
+2. Symlink this plugin's `support/x86` directory as `$SKETCHBOOK_DIR/hardware/keyboardio/x86`.
 E.g.
 ```
 ln -s support/x86 /path/to/sketchbook/hardware/keyboardio/x86
 ```
 
-Symlink your plugin directory (`$SKETCHBOOK_DIR/hardware/keyboardio/avr/libraries`) as
+3. Symlink your plugin directory (`$SKETCHBOOK_DIR/hardware/keyboardio/avr/libraries`) as
 `support/x86/libraries`.  E.g.
 ```
 ln -s /path/to/sketchbook/hardware/keyboardio/avr/libraries support/x86/libraries
