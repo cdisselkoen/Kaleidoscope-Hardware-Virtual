@@ -24,22 +24,31 @@ advantages:
 
 ## Installation
 
-1. Clone this Git repo into wherever you normally put plugins.  (This should be
+1. Find your plugin directory.  This is wherever you normally put plugins; it should be
 `$SKETCHBOOK_DIR/hardware/keyboardio/avr/libraries`, or at least accessible from there
 via symlink.  `$SKETCHBOOK_DIR` is your Arduino sketchbook directory, perhaps
-`$HOME/Arduino` or `$HOME/Documents/Arduino`.)
+`$HOME/Arduino` or `$HOME/Documents/Arduino`.
 
-2. Symlink this plugin's `support/x86` directory as `$SKETCHBOOK_DIR/hardware/keyboardio/x86`.
-E.g.
-```
-ln -s support/x86 /path/to/sketchbook/hardware/keyboardio/x86
-```
+1. Download Kaleidoscope-Hardware-Virtual into your plugin directory:
 
-3. Symlink your plugin directory (`$SKETCHBOOK_DIR/hardware/keyboardio/avr/libraries`) as
-`support/x86/libraries`.  E.g.
-```
-ln -s /path/to/sketchbook/hardware/keyboardio/avr/libraries support/x86/libraries
-```
+   1. __(Option 1 - using Git)__ Clone this Git repo into your plugin directory.
+      From the command line,
+
+       `git clone https://github.com/cdisselkoen/Kaleidoscope-Hardware-Virtual`
+
+   1. __(Option 2 - no Git or command-line required)__ Click the green "Clone or download"
+      button at the top right of this page, and select "Download ZIP".  Then, unzip the
+      folder in your plugin directory.
+
+1. Symlink this plugin's `support/x86` directory as `$SKETCHBOOK_DIR/hardware/keyboardio/x86`.
+   E.g.
+
+    `ln -s support/x86 /path/to/sketchbook/hardware/keyboardio/x86`
+
+1. Symlink your plugin directory (`$SKETCHBOOK_DIR/hardware/keyboardio/avr/libraries`) as
+   `support/x86/libraries`.  E.g.
+
+    `ln -s /path/to/sketchbook/hardware/keyboardio/avr/libraries support/x86/libraries`
 
 ## Usage
 
