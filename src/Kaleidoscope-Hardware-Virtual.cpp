@@ -84,15 +84,31 @@ void Virtual::readMatrix() {
         }
       }
     } else {
-      rc key = getRCfromPhysicalKey(token);
-      if(key.row < ROWS && key.col < COLS) {
-        keystates[key.row][key.col] =
-          (mode == M_DOWN) ? PRESSED :
-          (mode == M_UP) ? NOT_PRESSED :
-          TAP;
+      rc key;
+      if(token.front() == '(' && token.back() == ')') {
+        size_t commapos = token.find_first_of(',');
+        if(commapos == std::string::npos) {
+          std::cout << "Bad (r,c) pair: " << token << std::endl;
+          continue;
+        } else {
+          key.row = std::stoi(token.substr(1,commapos-1));
+          key.col = std::stoi(token.substr(commapos+1,token.length()-commapos-1));
+          if(key.row >= ROWS || key.col >= COLS) {
+            std::cout << "Bad coordinates: " << token << std::endl;
+            continue;
+          }
+        }
       } else {
-        std::cout << "Unrecognized command: " << token << std::endl;
+        key = getRCfromPhysicalKey(token);
+        if(key.row >= ROWS || key.col >= COLS) {
+          std::cout << "Unrecognized command: " << token << std::endl;
+          continue;
+        }
       }
+      keystates[key.row][key.col] =
+        (mode == M_DOWN) ? PRESSED :
+        (mode == M_UP) ? NOT_PRESSED :
+        TAP;
     }
   }
 }
