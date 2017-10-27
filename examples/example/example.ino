@@ -32,7 +32,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
 void setup () {
   Serial.begin(9600);
-  Kaleidoscope.setup(KEYMAP_SIZE);
+  Kaleidoscope.setup();
   Kaleidoscope.use(&LEDControl);
 }
 
