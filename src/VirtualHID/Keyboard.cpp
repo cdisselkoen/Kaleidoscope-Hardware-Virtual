@@ -69,6 +69,9 @@ boolean Keyboard_::wasModifierActive(uint8_t k) {
   return false;
 }
 
+// TODO: Emulate this in a reasonable way rather than always returning 0
+uint8_t Keyboard_::getLEDs() { return 0; }
+
 // For each bit set in 'bitfield', output the corresponding string to 'stream'
 #define FOREACHBIT(bitfield, stream, str0, str1, str2, str3, str4, str5, str6, str7) \
   if((bitfield) & 1<<0) stream << str0; \

@@ -30,6 +30,7 @@ class Keyboard_ {
     size_t release(uint8_t k);
     void releaseAll(void);
     int sendReport(void);
+    uint8_t getLEDs(void);
 
     boolean isModifierActive(uint8_t k);
     boolean wasModifierActive(uint8_t k);
