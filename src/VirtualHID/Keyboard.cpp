@@ -2,8 +2,15 @@
 #include <iostream>
 #include <sstream>
 #include "virtual_io.h"
+#include <assert.h>
 
-Keyboard_::Keyboard_(void) {}
+static StandardKeyboardReportConsumer standardKeyboardReportConsumer;
+
+Keyboard_::Keyboard_(void) 
+  :  _keyboardReportConsumer(&standardKeyboardReportConsumer)
+{
+}
+
 void Keyboard_::begin(void) {
   releaseAll();
 }
@@ -87,53 +94,71 @@ int Keyboard_::sendReport(void) {
   // Following KeyboardioHID, we only send report if it differs from previous report.
   if(!memcmp(_lastKeyReport.allkeys, _keyReport.allkeys, sizeof(_keyReport))) return -1;
 
+  assert(_keyboardReportConsumer);
+  _keyboardReportConsumer->processKeyboardReport(_keyReport);
+  
+  memcpy(_lastKeyReport.allkeys, _keyReport.allkeys, sizeof(_keyReport));
+
+  return 0;  // actually not sure what the return value should be here; seems that
+             // existing code doesn't check it
+}
+    
+void Keyboard_::setKeyboardReportConsumer(
+            KeyboardReportConsumer_ &keyboardReportConsumer)
+{
+   _keyboardReportConsumer = &keyboardReportConsumer;
+}
+
+void StandardKeyboardReportConsumer::processKeyboardReport(
+                                 const HID_KeyboardReport_Data_t &reportData)
+{
   std::stringstream keypresses;
   bool anything = false;
-  if(_keyReport.modifiers) anything = true;
-  else for(int i = 0; i < KEY_BYTES; i++) if(_keyReport.keys[i]) { anything = true; break; }
+  if(reportData.modifiers) anything = true;
+  else for(int i = 0; i < KEY_BYTES; i++) if(reportData.keys[i]) { anything = true; break; }
   if(!anything) {
     keypresses << "none";
   } else {
-    FOREACHBIT(_keyReport.modifiers, keypresses,
+    FOREACHBIT(reportData.modifiers, keypresses,
         "lctrl ", "lshift ", "lalt ", "lgui ",
         "rctrl ", "rshift ", "ralt ", "rgui ")
-    FOREACHBIT(_keyReport.keys[0], keypresses,
+    FOREACHBIT(reportData.keys[0], keypresses,
         "NO_EVENT ", "ERROR_ROLLOVER ", "POST_FAIL ", "ERROR_UNDEFINED ",
         "a ", "b ", "c ", "d ")
-    FOREACHBIT(_keyReport.keys[1], keypresses,
+    FOREACHBIT(reportData.keys[1], keypresses,
         "e ", "f ", "g ", "h ", "i ", "j ", "k ", "l ")
-    FOREACHBIT(_keyReport.keys[2], keypresses,
+    FOREACHBIT(reportData.keys[2], keypresses,
         "m ", "n ", "o ", "p ", "q ", "r ", "s ", "t ")
-    FOREACHBIT(_keyReport.keys[3], keypresses,
+    FOREACHBIT(reportData.keys[3], keypresses,
         "u ", "v ", "w ", "x ", "y ", "z ", "1/! ", "2/@ ")
-    FOREACHBIT(_keyReport.keys[4], keypresses,
+    FOREACHBIT(reportData.keys[4], keypresses,
         "3/# ", "4/$ ", "5/% ", "6/^ ", "7/& ", "8/* ", "9/( ", "0/) ")
-    FOREACHBIT(_keyReport.keys[5], keypresses,
+    FOREACHBIT(reportData.keys[5], keypresses,
         "enter ", "esc ", "del/bksp ", "tab ",
         "space ", "-/_ ", "=/+ ", "[/{ ")
-    FOREACHBIT(_keyReport.keys[6], keypresses,
+    FOREACHBIT(reportData.keys[6], keypresses,
         "]/} ", "\\/| ", "#/~ ", ";/: ", "'/\" ", "`/~ ", ",/< ", "./> ")
-    FOREACHBIT(_keyReport.keys[7], keypresses,
+    FOREACHBIT(reportData.keys[7], keypresses,
         "//? ", "capslock ", "F1 ", "F2 ", "F3 ", "F4 ", "F5 ", "F6 ")
-    FOREACHBIT(_keyReport.keys[8], keypresses,
+    FOREACHBIT(reportData.keys[8], keypresses,
         "F7 ", "F8 ", "F9 ", "F10 ", "F11 ", "F12 ", "prtscr ", "scrolllock ")
-    FOREACHBIT(_keyReport.keys[9], keypresses,
+    FOREACHBIT(reportData.keys[9], keypresses,
         "pause ", "ins ", "home ", "pgup ", "del ", "end ", "pgdn ", "r_arrow ")
-    FOREACHBIT(_keyReport.keys[10], keypresses,
+    FOREACHBIT(reportData.keys[10], keypresses,
         "l_arrow ", "d_arrow ", "u_arrow ", "numlock ",
         "num/ ", "num* ", "num- ", "num+ ")
-    FOREACHBIT(_keyReport.keys[11], keypresses,
+    FOREACHBIT(reportData.keys[11], keypresses,
         "numenter ", "num1 ", "num2 ", "num3 ",
         "num4 ", "num5 ", "num6 ", "num7 ")
-    FOREACHBIT(_keyReport.keys[12], keypresses,
+    FOREACHBIT(reportData.keys[12], keypresses,
         "num8 ", "num9 ", "num0 ", "num. ", "\\/| ", "app ", "power ", "num= ")
-    FOREACHBIT(_keyReport.keys[13], keypresses,
+    FOREACHBIT(reportData.keys[13], keypresses,
         "F13 ", "F14 ", "F15 ", "F16 ", "F17 ", "F18 ", "F19 ", "F20 ")
-    FOREACHBIT(_keyReport.keys[14], keypresses,
+    FOREACHBIT(reportData.keys[14], keypresses,
         "F21 ", "F22 ", "F23 ", "F24 ", "exec ", "help ", "menu ", "sel ")
-    FOREACHBIT(_keyReport.keys[15], keypresses,
+    FOREACHBIT(reportData.keys[15], keypresses,
         "stop ", "again ", "undo ", "cut ", "copy ", "paste ", "find ", "mute ")
-    FOREACHBIT(_keyReport.keys[16], keypresses,
+    FOREACHBIT(reportData.keys[16], keypresses,
         "volup ", "voldn ", "capslock_l ", "numlock_l ",
         "scrolllock_l ", "num, ", "num= ", "(other) ")
     for(int i = 17; i < KEY_BYTES; i++) {
@@ -141,16 +166,12 @@ int Keyboard_::sendReport(void) {
       //   (1) obviously, "(other)" refers to many distinct keys
       //   (2) this might undercount the number of "other" keys pressed
       // Therefore, if any keys are frequently used, they should be handled above and not via "other"
-      if(_keyReport.keys[i]) keypresses << "(other) ";
+      if(reportData.keys[i]) keypresses << "(other) ";
     }
   }
-  memcpy(_lastKeyReport.allkeys, _keyReport.allkeys, sizeof(_keyReport));
 
   std::cout << "Sent virtual HID report. Pressed keys: " << keypresses.str() << std::endl;
   logUSBEvent_keyboard("Keyboard HID report; pressed keys: " + keypresses.str());
-
-  return 0;  // actually not sure what the return value should be here; seems that
-             // existing code doesn't check it
 }
 
 Keyboard_ Keyboard;

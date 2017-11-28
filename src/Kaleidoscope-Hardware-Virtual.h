@@ -35,6 +35,13 @@ typedef struct {
 
 class Virtual {
   public:
+     
+    typedef enum {
+      PRESSED,
+      NOT_PRESSED,
+      TAP,
+    } keystate;
+    
     Virtual(void);
     void setup(void);
 
@@ -47,23 +54,24 @@ class Virtual {
     void maskHeldKeys(void);
 
     void syncLeds(void) {}
-    void setCrgbAt(byte row, byte col, cRGB color) {}
-    void setCrgbAt(uint8_t i, cRGB color) {}
-    cRGB getCrgbAt(uint8_t i) { return CRGB(0,0,0); }
+    void setCrgbAt(byte /*row*/, byte /*col*/, cRGB /*color*/) {}
+    void setCrgbAt(uint8_t /*i*/, cRGB /*color*/) {}
+    cRGB getCrgbAt(uint8_t /*i*/) { return CRGB(0,0,0); }
     void scanMatrix(void) {
       readMatrix();
       actOnMatrixScan();
     }
+    
+    void setEnableReadMatrix(bool state) { _readMatrixEnabled = state; }
+    
+    void setKeystate(byte row, byte col, keystate ks);
 
   private:
-    typedef enum {
-      PRESSED,
-      NOT_PRESSED,
-      TAP,
-    } keystate;
 
     keystate keystates[ROWS][COLS];
-    keystate keystates_prev[ROWS][COLS];
+    keystate keystates_prev[ROWS][COLS];  
+    
+    bool _readMatrixEnabled;
 
     bool anythingHeld();
 

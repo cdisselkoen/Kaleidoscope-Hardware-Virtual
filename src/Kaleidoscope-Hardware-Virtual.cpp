@@ -23,7 +23,9 @@
 #include <sstream>
 #include <string>
 
-Virtual::Virtual(void) {
+Virtual::Virtual(void) 
+   :  _readMatrixEnabled(true)
+{
 }
 
 void Virtual::setup(void) {
@@ -59,6 +61,9 @@ typedef struct {
 static rc getRCfromPhysicalKey(std::string keyname);
 
 void Virtual::readMatrix() {
+   
+   if(!_readMatrixEnabled) return;
+   
   std::stringstream sline;
   sline << getLineOfInput(anythingHeld());
   Mode mode = M_TAP;
@@ -111,6 +116,11 @@ void Virtual::readMatrix() {
         TAP;
     }
   }
+}
+
+void Virtual::setKeystate(byte row, byte col, keystate ks)
+{
+   keystates[row][col] = ks;
 }
 
 void Virtual::actOnMatrixScan() {
