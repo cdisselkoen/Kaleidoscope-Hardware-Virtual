@@ -1,5 +1,7 @@
 # Kaleidoscope-Hardware-Virtual
 
+### NOTE: This repository is no longer active; development has moved to [the `keyboardio` org][kbrepo].
+
 This is a plugin for [Kaleidoscope][fw], targeted at **developers** (of Kaleidoscope
 or plugins for Kaleidoscope).  It allows you to test Kaleidoscope sketches,
 plugins, and changes to the core without physical hardware.  This has several
@@ -113,3 +115,4 @@ If you have feature requests or issues to report, again feel free to open issues
 GitHub!
 
  [fw]: https://github.com/keyboardio/Kaleidoscope
+ [kbrepo]: https://github.com/keyboardio/Kaleidoscope-Hardware-Virtual
