@@ -2,6 +2,7 @@
 
 // TODO: better time emulation
 // this is pretty hacky, but hopefully helps most code behave sanely
+__attribute__((weak))
 unsigned long millis(void) {
   static unsigned long time = 0;
   return time++;
